@@ -23,19 +23,22 @@ public class JwtUtil {
     private final long expirationMs;
 
     public JwtUtil(
-            @Value("${jwt.secret:c29tZS1zdXBlci1zZWNyZXQta2V5LWZvci1qd3QtaG1hYy1zaGEyNTYtYWxnb3JpdGhtLXVzZS1vbmx5}") String secret,
+            @Value("${jwt.secret:}") String secret,
             @Value("${jwt.expiration-ms:1800000}") long expirationMs) {
-        String normalizedSecret = (secret == null || secret.isBlank())
-                ? "c29tZS1zdXBlci1zZWNyZXQta2V5LWZvci1qd3QtaG1hYy1zaGEyNTYtYWxnb3JpdGhtLXVzZS1vbmx5"
-                : secret;
+        if (secret == null || secret.isBlank()) {
+            throw new IllegalStateException(
+                    "JWT_SECRET environment variable is not set. Refusing to start with an insecure default "
+                            + "signing key. Set the JWT_SECRET environment variable to a strong, random secret "
+                            + "(32+ bytes, base64-encoded is recommended) before starting the application.");
+        }
         byte[] keyBytes;
         try {
-            keyBytes = java.util.Base64.getDecoder().decode(normalizedSecret);
+            keyBytes = java.util.Base64.getDecoder().decode(secret);
             if (keyBytes.length < 32) {
-                keyBytes = normalizedSecret.getBytes(StandardCharsets.UTF_8);
+                keyBytes = secret.getBytes(StandardCharsets.UTF_8);
             }
         } catch (IllegalArgumentException ex) {
-            keyBytes = normalizedSecret.getBytes(StandardCharsets.UTF_8);
+            keyBytes = secret.getBytes(StandardCharsets.UTF_8);
         }
         if (keyBytes.length < 32) {
             // pad to satisfy HS256 minimum key length requirement

@@ -6,3 +6,8 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 .code_index/
+
+# Java / Maven build artifacts
+target/
+*.class
+*.jar
