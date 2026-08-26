@@ -1,6 +1,8 @@
 package com.example.app.config;
 
 import com.example.app.security.JwtFilter;
+import com.example.app.security.RestAccessDeniedHandler;
+import com.example.app.security.RestAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +28,8 @@ public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
     private final UserDetailsService userDetailsService;
+    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    private final RestAccessDeniedHandler restAccessDeniedHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -67,6 +71,10 @@ public class SecurityConfig {
                         // Everything else is closed by default and requires authentication,
                         // even if a future endpoint forgets to add a @PreAuthorize check.
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(handling -> handling
+                        .authenticationEntryPoint(restAuthenticationEntryPoint)
+                        .accessDeniedHandler(restAccessDeniedHandler)
                 );
 
         http.authenticationProvider(authenticationProvider());
