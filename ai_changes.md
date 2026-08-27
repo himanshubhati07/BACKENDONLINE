@@ -19,7 +19,7 @@ COMMIT_MESSAGE: Add JUnit5/Mockito unit+integration test suite, fix actuator hea
 ## Files Modified
 - `src/main/resources/application.properties` — `server.port` changed from hardcoded `22916` to `${SERVER_PORT:27171}` (env-overridable, required deployment port); test resource override for `jwt.secret`/mongo URI documented.
 - `src/main/java/com/example/app/config/SecurityConfig.java` — added `/actuator/health` and `/actuator/health/**` to the public (`permitAll`) request matcher list so health checks work without a JWT.
-- `start.sh` / `start.bat` — `SERVER_PORT` changed from `22916` to `27171`.
+- `start.sh` / `start.bat` — `SERVER_PORT` changed from `22916` to `27171`. Also: since `JwtUtil` intentionally refuses to start without `JWT_SECRET` (no insecure default baked into the app), both scripts now generate a random `JWT_SECRET` for the run only if the caller/environment hasn't already supplied one, so the app remains deployable out-of-the-box while never hardcoding a secret in source control.
 - `README.md` / `api_tests/test_results.md` — all references to port `22916` updated to `27171`.
 - `pom.xml` — added test-scope `org.apache.httpcomponents.client5:httpclient5` dependency (integration tests only, does not affect the shipped runtime jar).
 
