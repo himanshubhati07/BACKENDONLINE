@@ -1,5 +1,5 @@
 @echo off
-set SERVER_PORT=22916
+set SERVER_PORT=27171
 
 echo Building application...
 call mvn package -DskipTests -q

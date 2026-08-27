@@ -56,7 +56,8 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints: authentication APIs and API documentation only.
+                        // Public endpoints: authentication APIs, API documentation and the
+                        // health check (needed for uptime probes/load balancers).
                         .requestMatchers(
                                 "/api/v1/auth/**",
                                 "/docs",
@@ -66,7 +67,9 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
-                                "/webjars/**"
+                                "/webjars/**",
+                                "/actuator/health",
+                                "/actuator/health/**"
                         ).permitAll()
                         // Everything else is closed by default and requires authentication,
                         // even if a future endpoint forgets to add a @PreAuthorize check.

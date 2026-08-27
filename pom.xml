@@ -84,6 +84,18 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!--
+            Used only by integration tests: TestRestTemplate's default JDK
+            HttpURLConnection-based request factory throws
+            "cannot retry due to server authentication, in streaming mode" when a
+            POST/PUT/DELETE request deliberately receives a 401 response. Apache
+            HttpClient5 does not have this limitation.
+        -->
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

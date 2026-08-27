@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-SERVER_PORT=22916
+SERVER_PORT=27171
 
 echo "Building application..."
 mvn package -DskipTests -q
