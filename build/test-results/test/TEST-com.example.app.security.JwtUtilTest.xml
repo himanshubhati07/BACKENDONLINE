@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.example.app.security.JwtUtilTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-08-27T11:54:44" hostname="apix-dev" time="0.177">
-  <properties/>
-  <testcase name="generatesAndValidatesHs256Token()" classname="com.example.app.security.JwtUtilTest" time="0.113"/>
-  <testcase name="rejectsExpiredToken()" classname="com.example.app.security.JwtUtilTest" time="0.035"/>
-  <testcase name="shortOrBlankSecretNeverBreaksConstruction()" classname="com.example.app.security.JwtUtilTest" time="0.014"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
