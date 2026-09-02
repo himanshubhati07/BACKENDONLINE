@@ -16,13 +16,14 @@ services:
   app:
     build: .
     environment:
-      SERVER_PORT: 29353
+      SERVER_PORT: 24037
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/gen_d1e3b211c8e2
       SPRING_DATASOURCE_USERNAME: myuser
       SPRING_DATASOURCE_PASSWORD: mypassword
+      API_KEY: ${API_KEY:?API_KEY must be set}
       ADMIN_API_KEY: ${ADMIN_API_KEY:?ADMIN_API_KEY must be set}
     ports:
-      - "29353:29353"
+      - "24037:24037"
     depends_on:
       mysql:
         condition: service_healthy

@@ -1,28 +1,28 @@
-COMMIT_MESSAGE: Secure user management configuration and add test coverage
+COMMIT_MESSAGE: Configure environment API key for user management
 
 ## Features Added
-- Preserved the existing MySQL-backed User create, get, update, delete, and offset-paginated list APIs at `/api/v1/users`.
-- Added unit coverage for API-key rejection and acceptance and MockMvc HTTP coverage for User CRUD and validation responses.
-- Added a 400 response mapping for invalid user pagination input.
-- Added Dockerfile and Docker Compose deployment support on port 29353.
+- User create, get, update, delete, and offset-paginated list APIs remain available at `/api/v1/users` with validation and centralized error responses.
+- User API requests can now be authenticated directly with the API key supplied through the `API_KEY` environment variable, while retaining existing database-backed API-key support.
+- Added API-key unit coverage for missing, configured environment, and active stored keys; User HTTP CRUD and validation coverage remains in place.
+- Container and startup configuration now use the required port `24037`.
 
 ## Files Modified
-- `src/main/resources/application.properties` — configured port 29353, retained the resolved MySQL JDBC URL, and reads the administrator API key from `ADMIN_API_KEY`.
-- `src/main/java/com/example/app/controller/ApiKeyController.java` — injects the environment-backed API key property.
-- `src/main/java/com/example/app/config/SecurityConfig.java` — removed CORS enablement to match target configuration.
-- `src/main/java/com/example/app/exception/GlobalExceptionHandler.java` — maps illegal request parameters to HTTP 400.
-- `start.sh` — packages and starts the service on port 29353.
-- `README.md` — documents the environment API key, port, and Docker Compose startup.
-- `.gitignore` — ignores build artifacts and local code-index artifacts.
+- `src/main/resources/application.properties` — configured port `24037`, retained the resolved MySQL JDBC URL, externalized MySQL credentials, and added `app.secret.api-key=${API_KEY:}`.
+- `src/main/java/com/example/app/security/ApiKeyFilter.java` — validates the environment-configured API key with constant-time comparison before retaining database-key fallback behavior.
+- `src/test/java/com/example/app/security/ApiKeyFilterTest.java` — added configured API-key authentication test coverage.
+- `Dockerfile` — exposes and starts on port `24037`.
+- `docker-compose.yml` — configures port `24037` and passes the required `API_KEY` environment variable.
+- `start.sh` — packages and starts the service on port `24037`.
+- `README.md` — documents `API_KEY` use and port `24037`.
 
 ## Files Added
-- `Dockerfile` — container image definition for the Spring Boot jar.
-- `docker-compose.yml` — local MySQL and application deployment configuration.
-- `src/test/java/com/example/app/security/ApiKeyFilterTest.java` — API-key filter unit tests.
-- `src/test/java/com/example/app/controller/UserControllerIntegrationTest.java` — HTTP-level User CRUD and validation tests.
+- None.
 
 ## Secrets Moved
-- administrator API key -> `app.secret.admin-api-key=${ADMIN_API_KEY:}`
+- User API key -> `app.secret.api-key=${API_KEY:}`
+- Administrator API key -> `app.secret.admin-api-key=${ADMIN_API_KEY:}`
+- MySQL username -> `spring.datasource.username=${MYSQL_USER:myuser}`
+- MySQL password -> `spring.datasource.password=${MYSQL_PASSWORD:mypassword}`
 
 ## DB URLs Resolved
 - `jdbc:mysql://localhost:3306/gen_d1e3b211c8e2` -> `jdbc:mysql://localhost:3306/gen_d1e3b211c8e2`

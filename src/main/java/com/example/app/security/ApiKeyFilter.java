@@ -11,6 +11,8 @@ import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -21,9 +23,17 @@ public class ApiKeyFilter extends OncePerRequestFilter {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ApiKeyFilter.class);
   private final ApiKeyRepository apiKeyRepository;
+  private final String configuredApiKey;
 
   public ApiKeyFilter(ApiKeyRepository apiKeyRepository) {
+    this(apiKeyRepository, "");
+  }
+
+  @Autowired
+  public ApiKeyFilter(
+      ApiKeyRepository apiKeyRepository, @Value("${app.secret.api-key}") String configuredApiKey) {
     this.apiKeyRepository = apiKeyRepository;
+    this.configuredApiKey = configuredApiKey;
   }
 
   @Override
@@ -47,18 +57,24 @@ public class ApiKeyFilter extends OncePerRequestFilter {
       reject(response, "API key is required");
       return;
     }
-    String hash = sha256(rawKey);
-    ApiKey apiKey = apiKeyRepository.findByKeyHashAndActiveTrue(hash).orElse(null);
-    if (apiKey == null) {
-      LOGGER.warn("API key authentication failed for request path {}", request.getRequestURI());
-      reject(response, "Invalid API key");
-      return;
+    boolean matchesConfiguredKey =
+        !configuredApiKey.isBlank()
+            && MessageDigest.isEqual(
+                rawKey.getBytes(StandardCharsets.UTF_8), configuredApiKey.getBytes(StandardCharsets.UTF_8));
+    ApiKey apiKey = null;
+    if (!matchesConfiguredKey) {
+      apiKey = apiKeyRepository.findByKeyHashAndActiveTrue(sha256(rawKey)).orElse(null);
+      if (apiKey == null) {
+        LOGGER.warn("API key authentication failed for request path {}", request.getRequestURI());
+        reject(response, "Invalid API key");
+        return;
+      }
+      apiKey.setLastUsedAt(Instant.now());
+      apiKeyRepository.save(apiKey);
     }
-    apiKey.setLastUsedAt(Instant.now());
-    apiKeyRepository.save(apiKey);
+    String principal = matchesConfiguredKey ? "configured-api-key" : "api-key-" + apiKey.getId();
     UsernamePasswordAuthenticationToken authentication =
-        new UsernamePasswordAuthenticationToken(
-            "api-key-" + apiKey.getId(), null, java.util.List.of());
+        new UsernamePasswordAuthenticationToken(principal, null, java.util.List.of());
     SecurityContextHolder.getContext().setAuthentication(authentication);
     filterChain.doFilter(request, response);
   }

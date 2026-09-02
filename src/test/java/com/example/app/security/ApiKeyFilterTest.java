@@ -31,6 +31,21 @@ class ApiKeyFilterTest {
   }
 
   @Test
+  void permitsRequestWithConfiguredEnvironmentApiKey() throws Exception {
+    ApiKeyRepository repository = mock(ApiKeyRepository.class);
+    ApiKeyFilter filter = new ApiKeyFilter(repository, "environment-api-key");
+    MockHttpServletRequest request = new MockHttpServletRequest("GET", "/api/v1/users");
+    request.addHeader("X-API-Key", "environment-api-key");
+    MockHttpServletResponse response = new MockHttpServletResponse();
+    MockFilterChain chain = new MockFilterChain();
+
+    filter.doFilter(request, response, chain);
+
+    assertThat(response.getStatus()).isEqualTo(200);
+    assertThat(chain.getRequest()).isNotNull();
+  }
+
+  @Test
   void permitsRequestWithActiveApiKey() throws Exception {
     ApiKeyRepository repository = mock(ApiKeyRepository.class);
     ApiKeyFilter filter = new ApiKeyFilter(repository);
