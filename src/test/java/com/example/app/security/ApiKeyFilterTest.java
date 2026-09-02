@@ -12,9 +12,9 @@ import java.time.Instant;
 import java.util.HexFormat;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.mock.web.MockFilterChain;
 
 class ApiKeyFilterTest {
 
@@ -24,7 +24,8 @@ class ApiKeyFilterTest {
     ApiKeyFilter filter = new ApiKeyFilter(repository);
     MockHttpServletResponse response = new MockHttpServletResponse();
 
-    filter.doFilter(new MockHttpServletRequest("GET", "/api/v1/users"), response, new MockFilterChain());
+    filter.doFilter(
+        new MockHttpServletRequest("GET", "/api/v1/users"), response, new MockFilterChain());
 
     assertThat(response.getStatus()).isEqualTo(401);
     assertThat(response.getContentAsString()).contains("API key is required");
@@ -68,6 +69,7 @@ class ApiKeyFilterTest {
 
   private String hash(String value) throws Exception {
     return HexFormat.of()
-        .formatHex(MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8)));
+        .formatHex(
+            MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8)));
   }
 }

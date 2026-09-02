@@ -60,7 +60,8 @@ public class ApiKeyFilter extends OncePerRequestFilter {
     boolean matchesConfiguredKey =
         !configuredApiKey.isBlank()
             && MessageDigest.isEqual(
-                rawKey.getBytes(StandardCharsets.UTF_8), configuredApiKey.getBytes(StandardCharsets.UTF_8));
+                rawKey.getBytes(StandardCharsets.UTF_8),
+                configuredApiKey.getBytes(StandardCharsets.UTF_8));
     ApiKey apiKey = null;
     if (!matchesConfiguredKey) {
       apiKey = apiKeyRepository.findByKeyHashAndActiveTrue(sha256(rawKey)).orElse(null);

@@ -46,29 +46,42 @@ class UserControllerIntegrationTest {
     when(userService.update(eq(1L), any(UserRequest.class))).thenReturn(created);
     doNothing().when(userService).delete(1L);
 
-    String payload = """
-        {"firstName":"Ada","lastName":"Lovelace","email":"ada@example.com","phone":"1234567890","status":"ACTIVE"}
-        """;
-    mockMvc.perform(post("/api/v1/users").contentType(MediaType.APPLICATION_JSON).content(payload))
+    String payload =
+        """
+{"firstName":"Ada","lastName":"Lovelace","email":"ada@example.com","phone":"1234567890","status":"ACTIVE"}
+""";
+    mockMvc
+        .perform(post("/api/v1/users").contentType(MediaType.APPLICATION_JSON).content(payload))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").value(1))
         .andExpect(jsonPath("$.email").value("ada@example.com"));
-    mockMvc.perform(get("/api/v1/users/1"))
+    mockMvc
+        .perform(get("/api/v1/users/1"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.firstName").value("Ada"));
-    mockMvc.perform(put("/api/v1/users/1").contentType(MediaType.APPLICATION_JSON).content(payload))
+    mockMvc
+        .perform(put("/api/v1/users/1").contentType(MediaType.APPLICATION_JSON).content(payload))
         .andExpect(status().isOk());
     mockMvc.perform(delete("/api/v1/users/1")).andExpect(status().isNoContent());
   }
 
   @Test
   void rejectsInvalidUserPayload() throws Exception {
-    mockMvc.perform(post("/api/v1/users").contentType(MediaType.APPLICATION_JSON).content("{}"))
+    mockMvc
+        .perform(post("/api/v1/users").contentType(MediaType.APPLICATION_JSON).content("{}"))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message").exists());
   }
 
   private UserResponse response(Long id, String firstName, String lastName, String email) {
-    return new UserResponse(id, firstName, lastName, email, "1234567890", UserStatus.ACTIVE, Instant.EPOCH, Instant.EPOCH);
+    return new UserResponse(
+        id,
+        firstName,
+        lastName,
+        email,
+        "1234567890",
+        UserStatus.ACTIVE,
+        Instant.EPOCH,
+        Instant.EPOCH);
   }
 }
