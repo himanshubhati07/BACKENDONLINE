@@ -37,7 +37,7 @@ public class ApiKeyController {
   private final String configuredKey;
 
   public ApiKeyController(
-      ApiKeyRepository apiKeyRepository, @Value("${admin.api-key}") String configuredKey) {
+      ApiKeyRepository apiKeyRepository, @Value("${app.secret.admin-api-key}") String configuredKey) {
     this.apiKeyRepository = apiKeyRepository;
     this.configuredKey = configuredKey;
   }

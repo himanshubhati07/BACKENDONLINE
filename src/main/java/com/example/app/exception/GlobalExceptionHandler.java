@@ -38,6 +38,12 @@ public class GlobalExceptionHandler {
     return response(HttpStatus.BAD_REQUEST, message, request);
   }
 
+  @ExceptionHandler(IllegalArgumentException.class)
+  public ResponseEntity<ErrorResponse> handleBadRequest(
+      IllegalArgumentException exception, HttpServletRequest request) {
+    return response(HttpStatus.BAD_REQUEST, exception.getMessage(), request);
+  }
+
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponse> handleUnexpected(
       Exception exception, HttpServletRequest request) {
