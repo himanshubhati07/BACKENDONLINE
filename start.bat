@@ -1,5 +1,5 @@
 @echo off
-set SERVER_PORT=22916
+if "%SERVER_PORT%"=="" set SERVER_PORT=27587
 
 echo Building application...
 call mvn package -DskipTests -q

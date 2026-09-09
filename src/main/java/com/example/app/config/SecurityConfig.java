@@ -59,6 +59,8 @@ public class SecurityConfig {
                         // Public endpoints: authentication APIs and API documentation only.
                         .requestMatchers(
                                 "/api/v1/auth/**",
+                                "/actuator/health",
+                                "/actuator/health/**",
                                 "/docs",
                                 "/docs/**",
                                 "/api-docs",

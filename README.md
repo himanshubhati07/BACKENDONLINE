@@ -37,7 +37,7 @@ overridden with environment variables — no secrets are hardcoded:
 | Property | Env Var | Default |
 |---|---|---|
 | `spring.data.mongodb.uri` | `MONGODB_URI` | `mongodb://localhost:27017/gen_e8ea1cb1f5b0` |
-| `server.port` | — | `22916` |
+| `server.port` | `SERVER_PORT` | `27587` |
 | `jwt.secret` | `JWT_SECRET` | built-in fallback (change in production) |
 | `jwt.expiration-ms` | `JWT_EXPIRATION` | `1800000` (30 minutes) |
 
@@ -48,7 +48,7 @@ chmod +x start.sh
 ./start.sh
 ```
 
-This builds the jar with Maven and starts the server on port `22916`.
+This builds the jar with Maven and starts the server on port `27587`.
 
 Windows:
 
@@ -56,10 +56,10 @@ Windows:
 start.bat
 ```
 
-Health check: `GET http://localhost:22916/actuator/health`
+Health check: `GET http://localhost:27587/actuator/health`
 
-Swagger UI: `http://localhost:22916/docs`
-OpenAPI JSON: `http://localhost:22916/api-docs`
+Swagger UI: `http://localhost:27587/docs`
+OpenAPI JSON: `http://localhost:27587/api-docs`
 
 ## Authentication Flow
 
@@ -92,6 +92,11 @@ Base path: `/api/v1`
 | GET | `/api/v1/products/{id}` | USER/ADMIN | Get a product by id |
 | PUT | `/api/v1/products/{id}` | ADMIN | Update a product |
 | DELETE | `/api/v1/products/{id}` | ADMIN | Delete a product |
+| POST | `/api/v1/apis` | Authenticated | Add a new API |
+| GET | `/api/v1/apis?page=&size=&search=&sort=` | Authenticated | List APIs (paginated, searchable by name) |
+| GET | `/api/v1/apis/{id}` | Authenticated | Get an API by id |
+| PUT | `/api/v1/apis/{id}` | Authenticated | Update an API by id |
+| DELETE | `/api/v1/apis/{id}` | Authenticated | Delete an API by id |
 | GET | `/actuator/health` | Public | Health check |
 
 ## Response Format
