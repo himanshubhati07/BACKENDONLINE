@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
-SERVER_PORT=24037
+SERVER_PORT="${SERVER_PORT:-23006}"
 mvn package -DskipTests -q
-java -jar target/app-0.1.0.jar --server.port=24037
+java -jar target/app-0.1.0.jar --server.port=$SERVER_PORT
