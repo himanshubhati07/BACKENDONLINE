@@ -95,13 +95,6 @@ public class UserService {
     return toResponse(saved);
   }
 
-  public void delete(Long id) {
-    User user = findActive(id);
-    user.setDeleted(true);
-    userRepository.save(user);
-    LOGGER.info("Soft deleted user id={}", id);
-  }
-
   private User findActive(Long id) {
     User user =
         userRepository

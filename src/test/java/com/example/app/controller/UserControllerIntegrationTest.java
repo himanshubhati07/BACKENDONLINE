@@ -2,10 +2,8 @@ package com.example.app.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -44,7 +42,6 @@ class UserControllerIntegrationTest {
     when(userService.create(any(UserRequest.class))).thenReturn(created);
     when(userService.get(1L)).thenReturn(created);
     when(userService.update(eq(1L), any(UserRequest.class))).thenReturn(created);
-    doNothing().when(userService).delete(1L);
 
     String payload =
         """
@@ -62,7 +59,6 @@ class UserControllerIntegrationTest {
     mockMvc
         .perform(put("/api/v1/users/1").contentType(MediaType.APPLICATION_JSON).content(payload))
         .andExpect(status().isOk());
-    mockMvc.perform(delete("/api/v1/users/1")).andExpect(status().isNoContent());
   }
 
   @Test

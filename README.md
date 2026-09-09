@@ -10,9 +10,9 @@ The service uses controller, service, repository, entity, DTO, configuration, se
 
 - Java 21
 - Maven 3.9+
-- MySQL running at `localhost:3306` with database `gen_d1e3b211c8e2`
+- MySQL running at `localhost:3306` with database `gen_7c11ddcd7a3b`
 
-The supplied environment is configured in `src/main/resources/application.properties` using the verified database connection and port `24037`. Set `API_KEY` in the environment to authenticate User APIs and set `ADMIN_API_KEY` before using API-key administration endpoints.
+The supplied environment is configured in `src/main/resources/application.properties` using the verified database connection and port `23006`. Set `API_KEY` in the environment to authenticate User APIs and set `ADMIN_API_KEY` before using API-key administration endpoints.
 
 ## Run locally
 
@@ -23,10 +23,10 @@ chmod +x ./start.sh
 bash ./start.sh
 ```
 
-Health: `curl http://localhost:24037/actuator/health`
+Health: `curl http://localhost:23006/actuator/health`
 
-Swagger UI: `http://localhost:24037/docs`  
-OpenAPI JSON: `http://localhost:24037/api-docs`
+Swagger UI: `http://localhost:23006/docs`  
+OpenAPI JSON: `http://localhost:23006/api-docs`
 
 Docker and Docker Compose are provided. Set `ADMIN_API_KEY` and run `docker compose up --build`.
 
@@ -36,7 +36,7 @@ API keys are database-backed and stored only as SHA-256 hashes. Obtain the admin
 
 ```bash
 ADMIN_KEY="$ADMIN_API_KEY"
-curl -X POST http://localhost:24037/api/v1/api-keys \
+curl -X POST http://localhost:23006/api/v1/api-keys \
   -H "X-Admin-Key: $ADMIN_KEY" \
   -H 'Content-Type: application/json' \
   -d '{"name":"local-client"}'
@@ -56,10 +56,9 @@ Use the returned `apiKey` only in `X-API-Key`; it is returned once and never sto
 | GET | `/api/v1/users/{id}` | Get user |
 | GET | `/api/v1/users?offset=0&limit=20&sort=createdAt,desc&status=ACTIVE&search=john` | List/filter/search users |
 | PUT | `/api/v1/users/{id}` | Update user |
-| DELETE | `/api/v1/users/{id}` | Soft delete user |
 
 ```bash
-curl -H "X-API-Key: your-api-key" http://localhost:24037/api/v1/users
+curl -H "X-API-Key: your-api-key" http://localhost:23006/api/v1/users
 ```
 
 Validation rejects invalid user payloads with 400; duplicate email returns 409; a missing or invalid key returns 401.
