@@ -1,33 +1,24 @@
-COMMIT_MESSAGE: Remove user delete API endpoint and service method
+COMMIT_MESSAGE: Configure the application to use port 21699 by default
 
 ## Features Added
-- Removed the "delete user" capability entirely, per user request ("the user requests the removal of the delete API"):
-  - Deleted the `DELETE /api/v1/users/{id}` endpoint from `UserController`.
-  - Deleted the now-unused `UserService.delete(Long id)` soft-delete method.
-  - Existing soft-delete infrastructure (the `deleted` column on `User`, and the
-    `findByDeletedFalse*` repository queries used by list/get) was left intact
-    since it is unrelated read-path filtering logic, not the delete API itself.
-  - The unrelated `DELETE /api/v1/api-keys/{id}` (key revocation) admin endpoint
-    was intentionally left untouched — it is a distinct "revoke" operation, not
-    the user-facing delete API the request refers to.
-- Updated the integration test and README to drop references to the removed
-  delete endpoint.
+- Verified that the user DELETE API is absent from `UserController` and that `UserService` has no delete operation.
+- Kept the separate API-key revocation endpoint unchanged because it is not a user delete API.
+- Configured the application and local startup script to default to port 21699.
 
 ## Files Modified
-- `src/main/java/com/example/app/controller/UserController.java` — removed `delete()` handler and unused `DeleteMapping` import.
-- `src/main/java/com/example/app/service/UserService.java` — removed `delete(Long id)` method.
-- `src/test/java/com/example/app/controller/UserControllerIntegrationTest.java` — removed delete-related mock stub, assertion, and unused imports.
-- `README.md` — removed the `DELETE /api/v1/users/{id}` row from the endpoint table; updated port/DB references to match resolved values.
-- `src/main/resources/application.properties` — updated `server.port` to `${SERVER_PORT:23006}` and resolved the MySQL JDBC URL (see below).
+- `src/main/resources/application.properties` — changed the default `server.port` value to 21699.
+- `start.sh` — changed the default `SERVER_PORT` value to 21699.
+- `ai_changes.md` — recorded the verified API state and build result.
 
 ## Files Added
 - None.
 
 ## Secrets Moved
-- None — `app.secret.api-key` and `app.secret.admin-api-key` were already externalized via environment variables in application.properties.
+- None — API key settings were already externalized as `app.secret.api-key` and `app.secret.admin-api-key`.
 
 ## DB URLs Resolved
-- `jdbc:mysql://localhost:3306/gen_d1e3b211c8e2` -> `jdbc:mysql://localhost:3306/gen_7c11ddcd7a3b`
+- `jdbc:mysql://localhost:3306/gen_7c11ddcd7a3b` -> `jdbc:mysql://localhost:3306/gen_7c11ddcd7a3b` (already working).
+- The inactive Docker Compose URL was not used by the application properties configuration.
 
 ## Compilation Result
-PASSED — `mvn compile -q`, `mvn test -q`, and `mvn package -DskipTests -q` all completed successfully with Java 21.
+- PASSED — `mvn compile -q` and `mvn package -DskipTests -q` completed successfully with Java 21.

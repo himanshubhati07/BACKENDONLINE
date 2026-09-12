@@ -9,3 +9,11 @@ __pycache__/
 target/
 build/
 .gradle/
+api_test_report.xlsx
+test_results.md
+pr_url.txt
+generate_api_report.py
+project_report.docx
+generate_project_report.py
+start_b53b129f-34cd-47af-abc1-cf253f4c48b3.sh
+src/main/resources/application.properties
