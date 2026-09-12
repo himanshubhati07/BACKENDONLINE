@@ -17,3 +17,15 @@ project_report.docx
 generate_project_report.py
 start_b53b129f-34cd-47af-abc1-cf253f4c48b3.sh
 src/main/resources/application.properties
+.env*
+!.env.example
+*.log
+*.pid
+.job_logs/
+node_modules/
+.microservices_ports.json
+.tunnel_pids.json
+generate_changes_report.py
+send_report_email.py
+server.log
+start.log
