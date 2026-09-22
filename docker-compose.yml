@@ -52,7 +52,7 @@ services:
     ports:
       - "25518:25518"
     environment:
-      DATABASE_URL: postgresql+asyncpg://myuser:mypassword@db:5432/gen_53cbec77f35a
+      DATABASE_URL: postgresql+asyncpg://myuser:mypassword@localhost:5432/gen_e06e18eb23c5
       ADMIN_API_KEY: ${ADMIN_API_KEY:-gA-D3AWbajgYDiX4BoFtcZq0hW6CrnhNS2yuXegcYbY}
       API_PREFIX: /api/v1
       PROJECT_NAME: Task Management API

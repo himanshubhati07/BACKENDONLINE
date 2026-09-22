@@ -3,7 +3,7 @@ import asyncio
 
 from dotenv import load_dotenv
 
-load_dotenv('.env_6fb25fff-dbb0-4770-a1c9-7ca2debd1b59', override=True)
+load_dotenv('.env_b053751c0f39d3e4', override=True)
 
 from sqlalchemy import select
 

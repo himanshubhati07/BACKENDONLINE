@@ -61,6 +61,23 @@ async def list_tasks(
     return TaskListOut(items=items, total=total, limit=limit, offset=offset)
 
 
+@router.delete("", status_code=status.HTTP_200_OK)
+async def delete_all_tasks(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(Task))
+    tasks = result.scalars().all()
+    count = len(tasks)
+
+    for task in tasks:
+        await db.delete(task)
+    await db.commit()
+
+    published = await publish_task_event("TASK_ALL_DELETED", {"count": count})
+    if not published:
+        logger.error("TASK_ALL_DELETED event failed to publish for %s tasks", count)
+
+    return {"detail": "All tasks deleted", "count": count}
+
+
 @router.get("/{task_id}", response_model=TaskOut)
 async def get_task(task_id: uuid.UUID, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(Task).where(Task.id == task_id))
