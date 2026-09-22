@@ -49,6 +49,11 @@ class ApiKeyCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
 
 
+class ApiKeyUpdate(BaseModel):
+    name: Optional[str] = Field(None, min_length=1, max_length=100)
+    is_active: Optional[bool] = None
+
+
 class ApiKeyOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

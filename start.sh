@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 export PYTHONUNBUFFERED=1
-PORT="${PORT:-25518}"
+PORT="${PORT:-22315}"
 
 if [ ! -d ".venv" ]; then
     python3 -m venv .venv

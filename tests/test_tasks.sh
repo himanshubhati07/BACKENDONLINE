@@ -1,7 +1,7 @@
 #!/bin/bash
 # Tests for /api/v1/tasks endpoints (X-API-Key protected), including bulk delete-all
 set -u
-BASE_URL=${BASE_URL:-http://localhost:23516}
+BASE_URL=${BASE_URL:-http://localhost:22315}
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 

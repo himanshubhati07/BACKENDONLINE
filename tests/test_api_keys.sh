@@ -1,7 +1,7 @@
 #!/bin/bash
 # Tests for /api/v1/api-keys endpoints (admin-key protected)
 set -u
-BASE_URL=${BASE_URL:-http://localhost:23516}
+BASE_URL=${BASE_URL:-http://localhost:22315}
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
@@ -49,7 +49,24 @@ if [ "$FOUND" != "True" ]; then
   exit 1
 fi
 
-# 4. Revoke API key
+# 4. Edit (PUT) API key
+UPDATE_RESP=$(curl -s -w "\n%{http_code}" -X PUT "$BASE_URL/api/v1/api-keys/$KEY_ID" \
+  -H "Content-Type: application/json" \
+  -H "X-Admin-Key: $ADMIN_API_KEY" \
+  -d '{"name":"renamed-test-suite-key"}')
+UPDATE_CODE=$(echo "$UPDATE_RESP" | tail -n1)
+UPDATE_BODY=$(echo "$UPDATE_RESP" | sed '$d')
+if [ "$UPDATE_CODE" != "200" ]; then
+  echo "FAILED:update api key expected 200, got $UPDATE_CODE"
+  exit 1
+fi
+UPDATED_NAME=$(echo "$UPDATE_BODY" | python3 -c "import sys,json; print(json.load(sys.stdin).get('name',''))")
+if [ "$UPDATED_NAME" != "renamed-test-suite-key" ]; then
+  echo "FAILED:expected updated name, got $UPDATED_NAME"
+  exit 1
+fi
+
+# 5. Revoke API key
 REVOKE_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X DELETE "$BASE_URL/api/v1/api-keys/$KEY_ID" \
   -H "X-Admin-Key: $ADMIN_API_KEY")
 if [ "$REVOKE_CODE" != "200" ]; then

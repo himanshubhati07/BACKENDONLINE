@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.security import generate_api_key, get_admin_key
 from app.database import get_db
 from app.models import ApiKey
-from app.schemas import ApiKeyCreate, ApiKeyCreated, ApiKeyOut
+from app.schemas import ApiKeyCreate, ApiKeyCreated, ApiKeyOut, ApiKeyUpdate
 
 router = APIRouter(prefix="/api-keys", tags=["API Keys"], dependencies=[Depends(get_admin_key)])
 
@@ -34,6 +34,22 @@ async def create_api_key(payload: ApiKeyCreate, db: AsyncSession = Depends(get_d
 async def list_api_keys(db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(ApiKey).order_by(ApiKey.created_at.desc()))
     return result.scalars().all()
+
+
+@router.put("/{key_id}", response_model=ApiKeyOut)
+async def update_api_key(key_id: uuid.UUID, payload: ApiKeyUpdate, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(ApiKey).where(ApiKey.id == key_id))
+    api_key = result.scalar_one_or_none()
+    if api_key is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="API key not found")
+
+    update_data = payload.model_dump(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(api_key, field, value)
+
+    await db.commit()
+    await db.refresh(api_key)
+    return api_key
 
 
 @router.delete("/{key_id}", status_code=status.HTTP_200_OK)

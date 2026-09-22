@@ -2,7 +2,7 @@
 # Runs all test_*.sh scripts in this directory and reports a summary.
 set -u
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-export BASE_URL=${BASE_URL:-http://localhost:23516}
+export BASE_URL=${BASE_URL:-http://localhost:22315}
 
 PASS_COUNT=0
 FAIL_COUNT=0
